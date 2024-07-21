@@ -1,17 +1,22 @@
 package main
 
-import "fmt"
+import (
+	"bytes"
+	"fmt"
+	"io"
+)
 
 // Tag is a struct declaring a transformation that should be made
 // on a string
 type Tag struct {
 	search  string
-	process int // ?
-	before  string
+	process int    // whether to parse sub-items. ie, bold within links (TODO define better)
+	before  string // TODO convert?
 	after   string
 }
 
-type Parser = func(string, int) string
+// return whether affected
+type Parser = func([]byte, int, io.Writer) bool
 
 var linePrefix = []Tag{
 	{"    ", 0, "<pre><code>", "\n</code></pre>"},
@@ -32,6 +37,8 @@ var underline = []Tag{
 	{"-", 1, "<h2>", "</h2>\n"},
 }
 
+// can exist within lines, and if they do they can potentially cross lines.
+// basically, non-line-oriented
 var surround = []Tag{
 	{"``", 0, "<code>", "</code>"},
 	{"`", 0, "<code>", "</code>"},
@@ -65,22 +72,48 @@ var insert = [][]string{
 	{"  \n", "<br />"},
 }
 
-func doUnderline(s string) {
+func doUnderline(buffer []byte, newblock int, out io.Writer) {
 }
 
-var defaultParsers = []Parser{}
-
-// MD is...
-type MD struct {
-	data     []byte
-	newblock bool
-	parsers
+// line prefixes are commands that
+// a. must precede a line and
+// b. apply to a block of lines
+func doLinePrefix(buffer []byte, newblock int, out io.Writer) bool {
+	var p int
+	var tmp []byte
+	if newblock {
+		p = 0
+	} else if buffer[0] == '\n' {
+		p += 1
+	} else {
+		return false
+	}
+	for _, pref := range linePrefix {
+		if buffer[0] == '\n' {
+			out.Write('\n') // TODO err handling
+		}
+		for bytes.HasPrefix(buffer, []byte(pref.search)) {
+		}
+	}
 }
 
-func NewMD() MD {
-	MD{}
+func doSurround(buffer []byte, newblock int, out io.Writer) bool {
+	for _, pref := range surround {
+	}
 }
-func (md MD) process() {
+
+var defaultParsers = []Parser{
+	doUnderline,
+}
+
+func process(buffer []byte, newblock int, out io.Writer) {
+
+}
+
+func SmuToHTML(md []byte) []byte {
+	var buf bytes.Buffer
+	process(md, 1, &buf)
+	return buf
 }
 
 func main() {
