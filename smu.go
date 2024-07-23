@@ -133,8 +133,7 @@ out:
 			xml.EscapeText(out, inside)
 		}
 		out.Write([]byte(tag.after))
-		// TODO figure out this conidtion in smu.c
-		return stop + l
+		return stop + l + 1
 	}
 	return 0
 }

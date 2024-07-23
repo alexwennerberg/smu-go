@@ -1,3 +1,3 @@
 module git.sr.ht/~aw/smu-go
 
-go 1.22.4
+go 1.22
