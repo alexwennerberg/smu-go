@@ -170,18 +170,18 @@ func process(buffer []byte, newblock bool, out io.Writer) {
 	}
 }
 
-// TODO use
+// TODO use options pattern https://dev.to/kittipat1413/understanding-the-options-pattern-in-go-390c
 type SMU struct {
 	nohtml  bool
-	writer  io.Writer
 	parsers []Parser
 }
 
-func SmuToHTML(md []byte) []byte {
-	// var buf bytes.Buffer
-	// process(md, 1, &buf)
-	// return buf
-	return nil
+type Option func(*SMU)
+
+func smuRender(md []byte, options ...Option) []byte {
+	var buf bytes.Buffer
+	process(md, false, &buf)
+	return buf.Bytes()
 }
 
 func main() {
