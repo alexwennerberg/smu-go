@@ -12,3 +12,5 @@ libraries.
 
 This is basically a direct translation from `smu.c`, which means it may look a little
 un-Go-like.
+
+smu syntax is very similar to markdown. See https://github.com/Gottox/smu/blob/master/documentation

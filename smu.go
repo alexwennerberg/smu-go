@@ -16,7 +16,7 @@ type Tag struct {
 	after   string
 }
 
-// return bytes affected
+// return bytes affected (or -1 if new block?)
 type Parser = func([]byte, bool, io.Writer) int
 
 var linePrefix = []Tag{
@@ -166,7 +166,12 @@ func process(buffer []byte, newblock bool, out io.Writer) {
 			}
 			p += 1
 		}
-		// TODO block logic
+		// TODO understand and improve
+		if buffer[p-1] == '\n' && (len(buffer) > 1 && buffer[p+1] == '\n') {
+			newblock = true
+		} else {
+			newblock = affected < 0 // TODO understand
+		}
 	}
 }
 
