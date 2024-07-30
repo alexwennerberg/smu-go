@@ -110,7 +110,7 @@ out:
 		var stop int
 		for {
 			stop = p
-			p = bytes.Index(buffer[p:], []byte(tag.search))
+			p = bytes.Index(buffer[p+1:], []byte(tag.search))
 			// failed to find matching tag, continue
 			if p <= 0 {
 				continue out
@@ -121,10 +121,10 @@ out:
 		}
 		out.Write([]byte(tag.before))
 
-		inside := buffer[l : stop+1]
+		inside := buffer[l : stop+l]
 		// ignore single space around tags
-		if inside[0] == ' ' && inside[len(inside)-2] == ' ' {
-			inside = inside[1 : len(inside)-2]
+		if inside[0] == ' ' && inside[len(inside)-1] == ' ' {
+			inside = inside[1 : len(inside)-1]
 			l += 1
 		}
 		if tag.process > 0 {
@@ -133,7 +133,7 @@ out:
 			xml.EscapeText(out, inside)
 		}
 		out.Write([]byte(tag.after))
-		return stop + l + 1
+		return len(inside) + 2*l
 	}
 	return 0
 }
@@ -167,11 +167,11 @@ func process(buffer []byte, newblock bool, out io.Writer) {
 			p += 1
 		}
 		// TODO understand and improve
-		if buffer[p-1] == '\n' && (len(buffer) > 1 && buffer[p+1] == '\n') {
-			newblock = true
-		} else {
-			newblock = affected < 0 // TODO understand
-		}
+		// if buffer[p-1] == '\n' && (len(buffer) > 1 && buffer[p+1] == '\n') {
+		// newblock = true
+		// } else {
+		// newblock = affected < 0 // TODO understand
+		// }
 	}
 }
 

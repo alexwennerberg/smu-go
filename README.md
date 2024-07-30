@@ -1,5 +1,7 @@
 # simple markup (smu) in Go
 
+WIP! Doesn't work yet!
+
 A rewrite of [smu](https://github.com/Gottox/smu) in Go -- a markdown-like or
 markdown-lite language.
 
